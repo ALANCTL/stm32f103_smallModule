@@ -17,7 +17,7 @@ void Usart2_Init(uint32_t baudrate)
 	NVIC_InitTypeDef NVIC_InitStructure; 
 
   	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO ,ENABLE);
 	//Rx
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN_FLOATING;
