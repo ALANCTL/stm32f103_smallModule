@@ -27,7 +27,8 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能PORTA时钟	                   											 
 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟	
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟  
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);//使能CAN1时钟  
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -42,7 +43,7 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
  	CAN_InitStructure.CAN_TTCM=DISABLE;						 //非时间触发通信模式  //
  	CAN_InitStructure.CAN_ABOM=DISABLE;						 //软件自动离线管理	 //
   CAN_InitStructure.CAN_AWUM=DISABLE;						 //睡眠模式通过软件唤醒(清除CAN->MCR的SLEEP位)//
-  CAN_InitStructure.CAN_NART=ENABLE;						 	//禁止报文自动传送 //
+  CAN_InitStructure.CAN_NART=DISABLE;						 	//禁止报文自动传送 //
   CAN_InitStructure.CAN_RFLM=DISABLE;						 //报文不锁定,新的覆盖旧的 // 
   CAN_InitStructure.CAN_TXFP=DISABLE;						 //优先级由报文标识符决定 //
   CAN_InitStructure.CAN_Mode= mode;	         //模式设置： mode:0,普通模式;1,回环模式; //

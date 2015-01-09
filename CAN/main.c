@@ -7,91 +7,6 @@
 #include "systick.h"
 #include "can.h"
 
-
-uint8_t CANBufIsNotEmpty(void)
-{
-	uint8_t i=0;
-	Can_Receive_Msg(canbuf);
-	for(i=0;i<8;i++)
-	{
-		if(canbuf[i]!=0x00) return 1;
-	}
-	return 0;
-}
-
-void ClearCANBuf(void)
-{
-	uint8_t i=0;
-
-	for(i=0;i<8;i++)
-	{
-		canbuf[i]=0x00;
-	}
-}
-
-uint8_t CANBufIsThrottleCut(void)
-{
-	uint8_t i =0;
-	Can_Receive_Msg(canbuf);
-	for(i=0;i<8;i++)
-	{
-		switch(i)
-		{
-			case 0: if(canbuf[i]!=0x21) return 0;
-			break;
-			case 1: if(canbuf[i]!=0x22) return 0;
-			break;
-			case 2: if(canbuf[i]!=0x23) return 0;
-			break;
-			case 3: if(canbuf[i]!=0x24) return 0;
-			break;
-			case 4: if(canbuf[i]!=0x31) return 0;
-			break;
-			case 5: if(canbuf[i]!=0x41) return 0;
-			break;
-			case 6: if(canbuf[i]!=0x51) return 0;
-			break;
-			case 7: if(canbuf[i]!=0x61) return 0;
-			break;
-			default:
-			break;
-		}
-	}
-	return 1;
-}
-
-uint8_t CANBufIsThrottleRelease(void)
-{
-	uint8_t i =0;
-
-	Can_Receive_Msg(canbuf);
-	for(i=0;i<8;i++)
-	{
-		switch(i)
-		{
-			case 0: if(canbuf[i]!=0x51) return 0;
-			break;
-			case 1: if(canbuf[i]!=0x52) return 0;
-			break;
-			case 2: if(canbuf[i]!=0x53) return 0;
-			break;
-			case 3: if(canbuf[i]!=0x54) return 0;
-			break;
-			case 4: if(canbuf[i]!=0x51) return 0;
-			break;
-			case 5: if(canbuf[i]!=0x61) return 0;
-			break;
-			case 6: if(canbuf[i]!=0x71) return 0;
-			break;
-			case 7: if(canbuf[i]!=0x81) return 0;
-			break;
-			default:
-			break;
-		}
-	}
-	return 1;
-}
-
 int main(void)
 {
 	uint16_t loop_cnt = 0;
@@ -112,14 +27,12 @@ int main(void)
   TxMessage.RTR=0;		
   TxMessage.DLC=4;		
   
-  TxMessage.Data[0];
-  TxMessage.Data[1];
-  TxMessage.Data[2];
-  TxMessage.Data[3];
-  TxMessage.Data[4];		        
+  TxMessage.Data[0]= 0x01;
+  TxMessage.Data[1]= 0x01;
+  TxMessage.Data[2]= 0x01;
+  TxMessage.Data[3]= 0x01;
+  TxMessage.Data[4]= 0x01;		        
   CAN_Transmit(CAN1, &TxMessage);   
-  // while((CAN_TransmitStatus(CAN1, 0)!=CAN_TxStatus_Failed)&&(i<0XFFF));	
-
 
 	while (1) 
 	{
@@ -129,7 +42,8 @@ int main(void)
 			else
 				{LED_ON();}
 			loop_cnt++;
-		
+		     
+  CAN_Transmit(CAN1, &TxMessage); 
 			
 	}
 }
