@@ -12,6 +12,7 @@ int main(void)
 	SysTick_Config(SYSTICK_PRESCALER);
 	LED_Init();
 
+	Usart1_Init(57600);
 	Usart2_Init(57600);
 
 	while (1) 
@@ -22,5 +23,6 @@ int main(void)
 			else
 				{LED_ON();}
 			USART_SendData(USART2,'c');
+			USART_SendData(USART1,'c');
 	}
 }

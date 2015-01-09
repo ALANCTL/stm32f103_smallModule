@@ -8,6 +8,45 @@ void TIM3_Init(u16 arr,u16 psc);
 uint8_t USART2_RX_BUF[USART2_MAX_RECV_LEN]; 				
 uint16_t USART2_RX_STA=0;  
 
+
+void Usart1_Init(uint32_t baudrate)
+{
+	GPIO_InitTypeDef GPIO_InitStructure; 
+	USART_InitTypeDef USART_InitStructure;
+
+  	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO ,ENABLE);
+	//Rx
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_7;	// USART2 Rx (PA.3)								
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//Tx
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_6;	// USART2 Tx (PA.2)
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+	// Pin remap for USART1
+	GPIO_PinRemapConfig(GPIO_Remap_USART1, ENABLE);
+
+	//Parameters for USART2
+	USART_InitStructure.USART_BaudRate 				= baudrate;
+	USART_InitStructure.USART_WordLength 			= USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits 				= USART_StopBits_1;
+	USART_InitStructure.USART_Parity 				= USART_Parity_No;
+	USART_InitStructure.USART_HardwareFlowControl 	= USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode 					= USART_Mode_Rx | USART_Mode_Tx;   
+	// Configure USART2
+	USART_Init(USART1, &USART_InitStructure);		
+	USART_Cmd(USART1, ENABLE);
+	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)	;
+
+
+}
+
+
+
 //setup usart2
 //baudrate: assigned baudrate
 void Usart2_Init(uint32_t baudrate)
