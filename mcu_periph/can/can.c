@@ -48,11 +48,11 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
   CAN_InitStructure.CAN_TXFP=DISABLE;						 //优先级由报文标识符决定 //
   CAN_InitStructure.CAN_Mode= mode;	         //模式设置： mode:0,普通模式;1,回环模式; //
   //设置波特率
-  CAN_InitStructure.CAN_SJW=tsjw;				//重新同步跳跃宽度(Tsjw)为tsjw+1个时间单位  CAN_SJW_1tq	 CAN_SJW_2tq CAN_SJW_3tq CAN_SJW_4tq
-  CAN_InitStructure.CAN_BS1=tbs1; //Tbs1=tbs1+1个时间单位CAN_BS1_1tq ~CAN_BS1_16tq
-  CAN_InitStructure.CAN_BS2=tbs2;//Tbs2=tbs2+1个时间单位CAN_BS2_1tq ~	CAN_BS2_8tq
-  CAN_InitStructure.CAN_Prescaler=brp;            //分频系数(Fdiv)为brp+1	//
-  CAN_Init(CAN1, &CAN_InitStructure);            // 初始化CAN1 
+  CAN_InitStructure.CAN_SJW=CAN_SJW_1tq;    // For F4@180MHz : 1
+  CAN_InitStructure.CAN_BS1=CAN_BS1_4tq;    // For F4@180MHz : 2
+  CAN_InitStructure.CAN_BS2=CAN_BS2_4tq;    // For F4@180MHz : 2
+  CAN_InitStructure.CAN_Prescaler=4;        // For F4@180MHz : 9
+  CAN_Init(CAN1, &CAN_InitStructure);       // For F4@180MHz : 
 
  	CAN_FilterInitStructure.CAN_FilterNumber=0;	  //过滤器0
  	CAN_FilterInitStructure.CAN_FilterMode=CAN_FilterMode_IdMask; 
@@ -78,35 +78,29 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 	return 0;
 }   
  
-#if CAN_RX0_INT_ENABLE	//使能RX0中断
-//中断服务函数			    
+#if CAN_RX0_INT_ENABLE	
+
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
   	CanRxMsg RxMessage;
-	int i=0;
+
     CAN_Receive(CAN1, 0, &RxMessage);
-	for(i=0;i<8;i++)
-	printf("rxbuf[%d]:%d\r\n",i,RxMessage.Data[i]);
+
 }
 #endif
 
-//can发送一组数据(固定格式:ID为0X12,标准帧,数据帧)	
-//len:数据长度(最大为8)				     
-//msg:数据指针,最大为8个字节.
-//返回值:0,成功;
-//		 其他,失败;
 u8 Can_Send_Msg(u8* msg,u8 len)
 {	
   u8 mbox;
   u16 i=0;
   CanTxMsg TxMessage;
-  TxMessage.StdId=0x12;					 // 标准标识符为0
-  TxMessage.ExtId=0x12;				 // 设置扩展标示符（29位）
-  TxMessage.IDE=0;			 // 使用扩展标识符
-  TxMessage.RTR=0;		 // 消息类型为数据帧，一帧8位
-  TxMessage.DLC=len;							 // 发送两帧信息
+  TxMessage.StdId=0x12;	
+  TxMessage.ExtId=0x12;	
+  TxMessage.IDE=0;			
+  TxMessage.RTR=0;		 
+  TxMessage.DLC=len;		
   for(i=0;i<8;i++)
-  TxMessage.Data[i]=msg[i];				 // 第一帧信息          
+  TxMessage.Data[i]=msg[i];				      
   mbox= CAN_Transmit(CAN1, &TxMessage);   
   i=0;
   while((CAN_TransmitStatus(CAN1, mbox)!=CAN_TxStatus_Failed)&&(i<0XFFF))i++;	//等待发送结束

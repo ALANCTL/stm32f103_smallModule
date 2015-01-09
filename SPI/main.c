@@ -3,6 +3,7 @@
 #include "led.h" 
 #include "systick.h"
 #include "uart.h"
+#include "spi1.h"
 
 
 
@@ -14,7 +15,7 @@ int main(void)
 
 	Usart1_Init(57600);
 	Usart2_Init(57600);
-
+	SPI1_Init();
 	while (1) 
 	{
 			//LED Toggle
@@ -24,5 +25,6 @@ int main(void)
 				{LED_ON();}
 			USART_SendData(USART2,'c');
 			USART_SendData(USART1,'c');
+			SPI1_ReadWriteByte(0xAA);
 	}
 }

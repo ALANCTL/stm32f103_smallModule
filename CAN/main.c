@@ -32,7 +32,7 @@ int main(void)
   TxMessage.Data[2]= 0x01;
   TxMessage.Data[3]= 0x01;
   TxMessage.Data[4]= 0x01;		        
-  CAN_Transmit(CAN1, &TxMessage);   
+  //CAN_Transmit(CAN1, &TxMessage);   
 
 	while (1) 
 	{
@@ -43,7 +43,7 @@ int main(void)
 				{LED_ON();}
 			loop_cnt++;
 		     
-  CAN_Transmit(CAN1, &TxMessage); 
+  //CAN_Transmit(CAN1, &TxMessage); 
 			
 	}
 }

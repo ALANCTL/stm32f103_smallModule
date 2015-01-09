@@ -10,13 +10,13 @@ void SPI1_Init(void)
 	
    	 //SPI1腳位初始化
 	/* 設置 SPI1 pins: SCK, MISO and MOSI */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6| GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //復用推挽輸出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	//將SCK,MISO腳位拉高
-	GPIO_SetBits(GPIOA,GPIO_Pin_5);
-	GPIO_SetBits(GPIOA,GPIO_Pin_6);
+	// GPIO_SetBits(GPIOA,GPIO_Pin_5);
+	// GPIO_SetBits(GPIOA,GPIO_Pin_6);
 
 	/* SPI1 設置 */
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //設置SPI單向或是雙向的數據傳輸模式→SPI1設定為雙向雙向雙全工
