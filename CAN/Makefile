@@ -44,6 +44,8 @@ SRC+=	./main.c \
 		$(EXT_DEVICE)/PWR_ADC/pwradc.c \
 		$(EXT_DEVICE)/PWM/pwm.c \
 		$(EXT_DEVICE)/MAX6675/max6675.c \
+		$(EXT_DEVICE)/CAN_ExtensionBoard/can_extensionBoardProtocol.c\
+		$(EXT_DEVICE)/CAN_ExtensionBoard/HP_GPIO.c\
 		$(PERIPHERAL)/can/can.c \
 		$(PERIPHERAL)/systick/systick.c \
 		$(PERIPHERAL)/spi1/spi1.c \
@@ -57,6 +59,7 @@ CFLAGS_INCLUDE+=-I./ \
 		-I$(EXT_DEVICE)/PWR_ADC \
 		-I$(EXT_DEVICE)/PWM \
 		-I$(EXT_DEVICE)/MAX6675 \
+		-I$(EXT_DEVICE)/CAN_ExtensionBoard \
 		-I$(PERIPHERAL)/can \
 		-I$(PERIPHERAL)/systick \
 		-I$(PERIPHERAL)/spi1 \
@@ -132,6 +135,11 @@ clean:
 #Start CGDB with Black Magic Probe(BMP)
 cgdb:
 	cgdb -d $(GDB) firmware.elf -x ./bmp_gdb.gdb
+
+#Make gdbtui
+gdbtui:
+	$(GDB) -tui -x ../st_util_init.gdb
+
 #Make flash with openocd
 flash_openocd:
 	openocd -f interface/stlink-v2.cfg \

@@ -10,7 +10,8 @@
 #define LED_Pin			GPIO_Pin_3
 #define LED_ON()		GPIO_SetBits( LED_Port, LED_Pin );  
 #define LED_OFF()		GPIO_ResetBits( LED_Port, LED_Pin );
-
+#define LED_TOGGLE()	if(GPIO_ReadOutputDataBit(LED_Port,LED_Pin)){LED_OFF();}else{LED_ON();}
+		     
 /*Function Prototype*/
 //LED Initial 
 void LED_Init(void);
