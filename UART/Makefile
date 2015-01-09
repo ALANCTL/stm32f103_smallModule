@@ -47,7 +47,7 @@ SRC+=	./main.c \
 		$(PERIPHERAL)/can/can.c \
 		$(PERIPHERAL)/systick/systick.c \
 		$(PERIPHERAL)/spi1/spi1.c \
-		$(PERIPHERAL)/usart2/usart2.c \
+		$(PERIPHERAL)/uart/uart.c \
 		$(USER_LIB)/myprintf/myprintf.c 
 
 
@@ -60,7 +60,7 @@ CFLAGS_INCLUDE+=-I./ \
 		-I$(PERIPHERAL)/can \
 		-I$(PERIPHERAL)/systick \
 		-I$(PERIPHERAL)/spi1 \
-		-I$(PERIPHERAL)/usart2 \
+		-I$(PERIPHERAL)/uart \
 		-I$(USER_LIB)/myprintf
 #======================================================================#
 #Flags

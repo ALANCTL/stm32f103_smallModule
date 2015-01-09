@@ -2,7 +2,7 @@
 #include "stm32f10x_conf.h"
 #include "led.h" 
 #include "systick.h"
-#include "usart2.h"
+#include "uart.h"
 
 
 

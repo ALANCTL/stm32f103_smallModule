@@ -1,4 +1,4 @@
-#include "usart2.h"
+#include "uart.h"
 
 void TIM3_IRQHandler(void);
 void USART2_IRQHandler(void);

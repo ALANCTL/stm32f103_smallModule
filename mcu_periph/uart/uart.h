@@ -1,5 +1,5 @@
-#ifndef __USART2_H
-#define __USART2_H
+#ifndef __UART_H
+#define __UART_H
 
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
