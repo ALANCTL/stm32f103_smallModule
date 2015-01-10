@@ -6,6 +6,9 @@
 #include "pwm.h"
 #include "systick.h"
 #include "can.h"
+#include "can_extensionBoardProtocol.h"
+
+#include "math.h"
 
 static inline void Delay(uint32_t nCnt_1us)
 {
@@ -16,7 +19,9 @@ static inline void Delay(uint32_t nCnt_1us)
 int main(void)
 {
  	CanTxMsg TxMessage;
+  f4discoveryGyroPacket_t f4discoveryGyroData;
   uint16_t ccrrrrr=0;
+  uint16_t package_type=0;
 	SysTick_Config(SYSTICK_PRESCALER);
 	LED_Init();
 	//Usart2_Init(115200);
@@ -36,17 +41,26 @@ int main(void)
   TxMessage.Data[2]= 0x01;
   TxMessage.Data[3]= 0x01;
   TxMessage.Data[4]= 0x01;		        
+
   //CAN_Transmit(CAN1, &TxMessage);   
   // void TIM_SetAutoreload(TIM_TypeDef* TIMx, uint16_t Autoreload);
 	while (1) 
 	{
-      HP_PWM_PulseSet(ccrrrrr++);
       Delay(1000);
 
     if(can_RX0_received_flag == 1){
 
-  PackageIdentifier(&CAN1Rx0Message);
-  can_RX0_received_flag =0;
+      package_type = CANExtPackageIdentifier(&CAN1Rx0Message);
+
+      if(package_type == MSG_DISCOVERY_TEST){
+
+          f4discoveryGyroData = CANExt_DiscoveryPacketUnpack(&CAN1Rx0Message);
+
+          HP_PWM_PulseSet( (uint16_t)(fabs(f4discoveryGyroData.GyroZ) * 100.0f) );
+
+      }
+
+      can_RX0_received_flag =0;
 
     }
   //CAN_Transmit(CAN1, &TxMessage); 
