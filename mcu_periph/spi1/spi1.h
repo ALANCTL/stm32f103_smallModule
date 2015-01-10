@@ -13,6 +13,6 @@
 void SPI1_Init(void);				 //初始化SPIx
 void SPI1_SetSpeed(u8 SpeedSet);	 //設置SPIx速度
 u8 SPI1_ReadWriteByte(u8 TxData);	 //從SPIx讀寫取一個Byte
-		 
+uint8_t SPI_xfer(SPI_TypeDef *SPIx, uint8_t  WriteByte);
 #endif
 

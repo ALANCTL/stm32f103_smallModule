@@ -1,16 +1,28 @@
 #include "hmc5983.h"
 
-#include "usart.h"
 #include <stdio.h>
-#include "led.h"
+
 
 
 void hmc5983_delay(volatile uint32_t count)
 {
-
+	count = count ;
 	while (count--) {
 
 	}
+}
+
+void hmc5983_GPIODRDYInitialization(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA , ENABLE);
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);
+	//Configure LED Pin
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_1 ; 	
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
 uint8_t hmc5983_readByte(uint8_t addr){
@@ -24,6 +36,32 @@ uint8_t hmc5983_readByte(uint8_t addr){
 	return data;
 }
 
+
+uint8_t prevDRDYState=0; //0 = low, 1 = high
+
+uint8_t hmc5983_DRDY_Check(){
+
+	if(prevDRDYState == 0){
+
+		if(HMC5983_DRDY_READ() == 1){
+
+			prevDRDYState = 1;
+			return 1;
+		}
+
+	}else{
+
+		if(HMC5983_DRDY_READ() == 0){
+
+			prevDRDYState =  HMC5983_DRDY_READ();
+		}
+
+	}
+
+	return 0;
+
+
+}
 
 
 void hmc5983_initialize_config(void){
@@ -55,9 +93,18 @@ void hmc5983_initialize_config(void){
 }
 
 
-void hmc5983_update(imu_unscaled_data_t *imu_unscaledData){
+uint8_t hmc5983_chkDRDY(void){
+
+	return hmc5983_readByte(HMC5983_STATUS_REG);
+
+
+}
+
+
 
  uint8_t hmc5983_buffer[6];
+
+void hmc5983_update(void){
 
  	HMC5983_SELECT();
  	SPI_xfer(HMC5983_SPI , HMC5983_DATA_OUTOUT_X_H | 0xC0);
@@ -70,54 +117,5 @@ void hmc5983_update(imu_unscaled_data_t *imu_unscaledData){
 
 	HMC5983_DESELECT();
 
-	imu_unscaledData->mag[0] = -(int16_t)(((uint16_t)hmc5983_buffer[0] << 8) | (uint16_t)hmc5983_buffer[1]);
-	imu_unscaledData->mag[2] = -(int16_t)(((uint16_t)hmc5983_buffer[2] << 8) | (uint16_t)hmc5983_buffer[3]);
-	imu_unscaledData->mag[1] =  (int16_t)(((uint16_t)hmc5983_buffer[4] << 8) | (uint16_t)hmc5983_buffer[5]);
-
-
-
 }
 
-void hmc5983_convert_to_scale(imu_unscaled_data_t *imu_unscaledData, imu_data_t *imu_scaledData, imu_calibrated_offset_t *imu_offset){
-
-
-
-	imu_scaledData->mag[0]	= (float)(imu_unscaledData->mag[0]-imu_offset->mag[0]) * imu_offset->mag_scale[0];
-	imu_scaledData->mag[1]	= (float)(imu_unscaledData->mag[1]-imu_offset->mag[1]) * imu_offset->mag_scale[1]; // correct with board orientation
-	imu_scaledData->mag[2]	= (float)(imu_unscaledData->mag[2]-imu_offset->mag[2]) * imu_offset->mag_scale[2];
-
-
-}
-
-
-void hmc5983_apply_mag_calibration(imu_calibrated_offset_t *imu_offset){
-
-
-	/* Example of data for current board
-
-	Raw_Axis |  min   | max  |  average(offset) | 1-north scale	|>
-
-	    X	   -728		664		-32					4087 //4094 (fine calibrated)
-	    Y	   -881		534 	-174 					4091 // 4095 (fine calibrated)
-	    Z	   -871  	442 	-215				4129 //4xxx (fine calibrated)
-	
-	*/
-
-
-
-	imu_offset -> mag_scale[0]=1.0f;
-	imu_offset -> mag_scale[1]=1.0f;
-	imu_offset -> mag_scale[2]=1.0f;
-
-	imu_offset -> mag[0]=(int16_t)(-32);
-	imu_offset -> mag[1]=(int16_t)(-174);
-	imu_offset -> mag[2]=(int16_t)(-215);
-}
-
-
-void hmc5983_initialize_system(imu_calibrated_offset_t *imu_offset){
-
-	hmc5983_initialize_config();
-	hmc5983_apply_mag_calibration(imu_offset);
-
-}

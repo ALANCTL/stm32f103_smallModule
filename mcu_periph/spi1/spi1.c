@@ -22,8 +22,8 @@ void SPI1_Init(void)
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //設置SPI單向或是雙向的數據傳輸模式→SPI1設定為雙向雙向雙全工
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;						//設置SPI為主SPI,Mater
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;					//設置SPI數據傳輸大小→SPI發送與接收8bit的Byte結構
-	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;							//設置SPI在閒置時SCK狀態
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;						//設置SPI在第一個SCK上升/下降或是第二個SCK上升/下降時傳送/讀取資料
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;							//設置SPI在閒置時SCK狀態
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;						//設置SPI在第一個SCK上升/下降或是第二個SCK上升/下降時傳送/讀取資料
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;							//NSS訊號由硬體或是軟體控制
 	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;//設置SPI使用BaudRate預分頻
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;					//設置數據傳輸是MSB→LSB或是LSB→MSB :設定為MSB開始
@@ -86,6 +86,22 @@ u8 SPI1_ReadWriteByte(u8 TxData)
 	return SPIx_Rx ;  				    
 }
 
+
+uint8_t SPI_xfer(SPI_TypeDef *SPIx, uint8_t  WriteByte)
+{
+	uint8_t rxdata;
+
+	SPI_I2S_SendData(SPIx, (uint16_t) WriteByte);
+
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_TXE) == RESET);
+
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_RXNE) == RESET);
+
+	rxdata = SPI_I2S_ReceiveData(SPIx);
+
+
+	return rxdata;
+}
 
 
 
