@@ -44,6 +44,7 @@ SRC+=	./main.c \
 		$(EXT_DEVICE)/PWR_ADC/pwradc.c \
 		$(EXT_DEVICE)/PWM/pwm.c \
 		$(EXT_DEVICE)/hmc5983/hmc5983.c \
+		$(EXT_DEVICE)/ADS1246/ADS1246_MPX6115A.c \
 		$(EXT_DEVICE)/CAN_ExtensionBoard/can_extensionBoardProtocol.c\
 		$(EXT_DEVICE)/CAN_ExtensionBoard/HP_GPIO.c\
 		$(PERIPHERAL)/can/can.c \
@@ -59,6 +60,7 @@ CFLAGS_INCLUDE+=-I./ \
 		-I$(EXT_DEVICE)/PWR_ADC \
 		-I$(EXT_DEVICE)/PWM \
 		-I$(EXT_DEVICE)/hmc5983 \
+		-I$(EXT_DEVICE)/ADS1246 \
 		-I$(EXT_DEVICE)/CAN_ExtensionBoard \
 		-I$(PERIPHERAL)/can \
 		-I$(PERIPHERAL)/systick \

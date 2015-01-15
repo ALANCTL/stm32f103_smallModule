@@ -18,7 +18,8 @@ f4discoveryGyroPacket_t CANExt_DiscoveryPacketUnpack(CanRxMsg* RxMessage){
 f4discoveryGyroPacket_t f4discoveryGyroData;
 
 
-			uint8_t * ptr = & f4discoveryGyroData.GyroZ;
+      //uint8_t * ptr = & f4discoveryGyroData.GyroZ;
+      uint8_t* ptr = (uint8_t *)&f4discoveryGyroData.GyroZ;
 
                 ptr[0] = RxMessage -> Data[0];
                 ptr[1] = RxMessage -> Data[1];
