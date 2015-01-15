@@ -50,7 +50,7 @@ return  MagnetoInitializePacket;
  	CanTxMsg TxMessage;
 
   	TxMessage.ExtId=0x00030000 | ((uint32_t)MagDataPacket -> ID)<<8 | 0x000000F1;
-  	TxMessage.IDE=0;		
+  	TxMessage.IDE=CAN_Id_Extended;		
   	TxMessage.RTR=0;		
   	TxMessage.DLC=6;		
   	

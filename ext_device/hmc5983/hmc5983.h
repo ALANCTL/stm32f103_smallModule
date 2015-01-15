@@ -25,6 +25,8 @@ uint8_t hmc5983_readByte(uint8_t addr);
 void hmc5983_delay(volatile uint32_t );
 void hmc5983_initialize_config(void);
 void hmc5983_update(void);
-uint8_t hmc5983_DRDY_Check();
+uint8_t hmc5983_DRDY_Check(void);
+void hmc5983_GPIODRDYInitialization(void);
+uint8_t hmc5983_SPIchkDRDY(void);
 
 #endif

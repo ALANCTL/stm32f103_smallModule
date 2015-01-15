@@ -39,7 +39,7 @@ uint8_t hmc5983_readByte(uint8_t addr){
 
 uint8_t prevDRDYState=0; //0 = low, 1 = high
 
-uint8_t hmc5983_DRDY_Check(){
+uint8_t hmc5983_DRDY_Check(void){
 
 	if(prevDRDYState == 0){
 
@@ -93,7 +93,7 @@ void hmc5983_initialize_config(void){
 }
 
 
-uint8_t hmc5983_chkDRDY(void){
+uint8_t hmc5983_SPIchkDRDY(void){
 
 	return hmc5983_readByte(HMC5983_STATUS_REG);
 
